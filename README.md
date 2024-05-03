@@ -94,3 +94,10 @@
    3. C∈StringをC=t[(cpr+1)..brr]とする。
    4. D∈StringをD=t[(brr+1)...(t.length)]とする。
    5. Van(t, cpl, cpr, brl, brr, core, n) = A + B\*n + core + C\*n + Dとする。
+```
+例
+Van("abcABCdeDEFdef", 6, 7, 3, 10, "fgh", 0) = "abcfghdef"
+Van("abcABCdeDEFdef", 6, 7, 3, 10, "fgh", 1) = "abcABCfghDEFdef"
+Van("abcABCdeDEFdef", 6, 7, 3, 10, "fgh", 2) = "abcABCABCfghDEFDEFdef"
+Van("abcABCdeDEFdef", 6, 7, 3, 10, "fgh", 3) = "abcABCABCABCfghDEFDEFDEFdef"
+```
