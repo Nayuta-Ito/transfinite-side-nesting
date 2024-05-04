@@ -24,6 +24,7 @@
 - 自然数全体の集合をNで表す。
 - ポインタ全体の集合をPointerで表す。
 - 文字列全体の集合をStringで表す。
+- 順序対p=(a,b)に対し、p.left=a, p.right=bとする。
 
 ### 項
 - 文字0と(と)と+と,からなる要素数5の集合をΣとする。
@@ -32,6 +33,11 @@
 - 1. 0∈Tである。
 - 2. 任意のa∈T\\{0}とb∈PTに対し、a+b∈Tである。
 - 3. 任意のa∈Tとb∈{0,(0,0,0)}とc∈Tに対し、(a,b,c)∈T∩PTである。
+
+### 抽出
+1. t=(a,b,c)∈PTに対し、T.sup=aとする。
+2. t=(a,b,c)∈PTに対し、T.sub=bとする。
+3. t=(a,b,c)∈PTに対し、T.arg=cとする。
  
 ### 略記
 1. Tの元0を$0と略記する。
@@ -101,3 +107,26 @@ Van("abcABCdeDEFdef", 6, 7, 3, 10, "fgh", 1) = "abcABCfghDEFdef"
 Van("abcABCdeDEFdef", 6, 7, 3, 10, "fgh", 2) = "abcABCABCfghDEFDEFdef"
 Van("abcABCdeDEFdef", 6, 7, 3, 10, "fgh", 3) = "abcABCABCABCfghDEFDEFDEFdef"
 ```
+
+#### Nodes(t, n): PT×N→P(Pointer^2)の定義
+Nodes(t,n)は、集合{(a,b)∈Pointer^2 | a<t.length ∧ b<t.length ∧ s[a..b]∈T}である。
+
+#### DigUp(t, n): PT×N→Pointer^2の定義
+DigUp(t,n)は、集合Sを{(a,b)∈Pointer^2 | a<t.length ∧ b<t.length ∧ s[a..b]∈T ∧ (∀i<n (b > DigUp(t,i).right))}としたとき、Sの中で第1要素が最大のものの中で第2要素が最小のものである。
+
+#### IsCNF(t): T×Pointer^2→Booleanの定義
+1. t=0ならば、IsCNF(t)=trueとする。
+2. もしt∈PTでなければ、tはt\_1∈T\\{0}とt\_2∈PTを用いてt=t\_1+t\_2と書ける。このとき、IsCNF(t)=IsCNF(t\_1)∧IsCNF(t\_2)である。
+3. もしt∈PTであれば、tはt\_1,t\_2,t\_3∈Tを用いてt=(t\_1,t\_2,t\_3)と書ける。このとき、IsCNF(t)=IsCNF(t\_1)∧t\_2=0∧IsCNF(t\_3)である。
+
+## 正規化
+t∈Tの正規化は、tの一次正規化の二次正規化である。
+
+t∈Tの一次正規化は、tに対して以下の操作を行えなくなるまで行ったものである。
+1. (a, b)∈Nodes(t, n)であって、IsCNF(t[a..b])かつt[a..b]∈PTであるものを探す。なければ一次正規化を終了する。
+2. 見つけた(a, b)に対し、s=t[a..b]とおく。このとき、sはp,q,r∈Tを用いて(p,q,r)と書ける。
+3. tをt[0...a]+"("+"0,"+q+","+r+")"+t[(b+1)...(t.length)]で置き換える。
+
+t∈Tの二次正規化は、tに対して以下の操作を行えなくなるまで行ったものである。
+1. あるa,b∈Pointerとs∈Tが存在し、t[a..b]="("+s+",0,"+"("+s+$1+",0,0)"+",0)"であるとする。なければ二次正規化を終了する。
+2. tをt[0...a]+"("+s+","+$1+","+$0+")"+t[(b+1)...(t.length)]で置き換える。
