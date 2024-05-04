@@ -132,22 +132,22 @@ Depth(t)は、DigUp(t,n)が未定義でないような最大の自然数nであ�
 - S.rightが最も大きいもの中でS.rightが最も小さいものをt.argPtrとする。
 - subPtrはこれより定義が複雑なので今は未定義とする。
 
-### isSucc(t): T→Booleanの定義
-1. t=$0またはt∈PTならば、isSucc(t)はt=$1と同値である。
-2. そうでなければ、tはt\_1∈PTとt\_2∈T\\{0}を用いてt=t\_1+t\_2と書ける。このとき、isSucc(t)=isSucc(t\_2)である。
+### IsSucc(t): T→Booleanの定義
+1. t=$0またはt∈PTならば、IsSucc(t)はt=$1と同値である。
+2. そうでなければ、tはt\_1∈PTとt\_2∈T\\{0}を用いてt=t\_1+t\_2と書ける。このとき、IsSucc(t)=IsSucc(t\_2)である。
 
-### predIfPossible(t): T→Tの定義
+### PredIfPossible(t): T→Tの定義
 1. t=0またはt∈PTならば、
-   1. もしt=$1ならば、predIfPossible(t)=$0である。
-   2. そうでなければ、predIfPossible(t)=$1である。
+   1. もしt=$1ならば、PredIfPossible(t)=$0である。
+   2. そうでなければ、PredIfPossible(t)=$1である。
 2. そうでなければ、tはt\_1∈PTとt\_2∈T\\{0}を用いてt=t\_1+t\_2と書ける。
-   1. もしt\_2=$1ならば、predIfPossible(t)=t\_1である。
-   2. そうでなければ、predIfPossible(t)=t\_2である。
+   1. もしt\_2=$1ならば、PredIfPossible(t)=t\_1である。
+   2. そうでなければ、PredIfPossible(t)=t\_2である。
 
-### searchCount(t): T→Nの定義
-1. Tの項の列{t\_n}\_{n∈N}をpredIfPossible^n(t.sup)で定める。添字が0から始まることに注意せよ。
-2. もし∃n∈N ∀m∈N a\_m=a\_nならば、そのようなnの中で最小のものをsearchCount(t)とする。
-3. そうでなければ、searchCount(t)は未定義とする。
+### SearchCount(t): T→Nの定義
+1. Tの項の列{t\_n}\_{n∈N}をPredIfPossible^n(t.sup)で定める。添字が0から始まることに注意せよ。
+2. もし∃n∈N ∀m∈N a\_m=a\_nならば、そのようなnの中で最小のものをSearchCount(t)とする。
+3. そうでなければ、SearchCount(t)は未定義とする。
 
 ## 正規化
 t∈Tの正規化は、tの一次正規化の二次正規化である。
@@ -204,13 +204,29 @@ t∈Tに対し、FS(t,n): T×N→Tを以下で定義する。
          11. FS(t,n)=A+B+Cとする。
       3. そうでなければ、
          1. cutChild=t'[a\_0..b\_0]とする。
-         2. q=searchCount(t'[a\_0..b\_0])とする。
+         2. q=SearchCount(t'[a\_0..b\_0])とする。
          3. iを次の条件を満たす唯一の自然数とする。もし存在しなければ、i=Depth(t')とする。
-            1. 自然数0<=j<=iの範囲において、RealDigUp(t',j).sup=predIfPossible(cutChild.sup)かつRealDigUp(t',j).sub=0を満たすものがちょうどq個存在する。
-            2. 任意の自然数0<=j<=iに対し、Cmp(RealDigUp(t',j),cutChild)=+1であるか、(RealDigUp(t',j).sup=predIfPossible(cutChild.sup)かつRealDigUp(t',j).sub=0)である。
+            1. 自然数0<=j<=iの範囲において、RealDigUp(t',j).sup=PredIfPossible(cutChild.sup)かつRealDigUp(t',j).sub=0を満たすものがちょうどq個存在する。
+            2. 任意の自然数0<=j<=iに対し、Cmp(RealDigUp(t',j),cutChild)=+1であるか、(RealDigUp(t',j).sup=PredIfPossible(cutChild.sup)かつRealDigUp(t',j).sub=0)である。
          4. (a\_i,b\_i)=DigUp(t',a\_i)とする。
          5. core=cutChild[0..(cutChild.supPtr.second)]+","+"0"+","+cutChild[(cutChild.argPtr.first)...(cutChild.length)]とする。
          6. FS(t,n)=Van(t',a\_i,b\_1,a\_0,b\_0,core,n)とする。
 
 ## 巨大数
-WIP
+### FGH
+f(t,n): T×N→Nを以下で定義する。
+1. t=$0ならば、f(t,n)=n+1である。
+2. t≠$0かつIsSucc(t)ならば、f(t,n)=(λx.f(FS(t,0),x))^n(n)である。
+3. t≠$0かつ￢IsSucc(t)ならば、f(t,n)=f(FS(t,n),n)である。
+
+### 限界関数
+Λ(n): N→Tを以下で定義する。
+1. n=0ならば、Λ(n)=($1,$1,$0)である。
+2. そうでなければ、Λ(n)=(Λ(n-1),$1,$0)である。
+
+lim(n): N→Nを以下で定義する。
+1. lim(n)=f((0,0,(Λ(n),$1,(Λ(n),$1,0)),n)である。
+
+### 巨大数
+
+lim(100)を「無限回貫通問題は存在しない」とする。
