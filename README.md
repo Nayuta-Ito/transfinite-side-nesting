@@ -110,10 +110,16 @@ Van("abcABCdeDEFdef", 6, 7, 3, 10, "fgh", 3) = "abcABCABCABCfghDEFDEFDEFdef"
 
 ## サブ関数
 ### Nodes(t): PT→P(Pointer^2)の定義
-Nodes(t)は、集合{(a,b)∈Pointer^2 | a<t.length ∧ b<t.length ∧ s[a..b]∈T}である。
+Nodes(t)は、集合{(a,b)∈Pointer^2 | a<t.length ∧ b<t.length ∧ s[a..b]∈PT\\{$1}}である。
 
 ### DigUp(t, n): PT×N→Pointer^2の定義
-DigUp(t,n)は、集合Sを{(a,b)∈Pointer^2 | a<t.length ∧ b<t.length ∧ s[a..b]∈T ∧ (∀i<n (b > DigUp(t,i).right))}としたとき、Sの中で第1要素が最大のものの中で第2要素が最小のものである。
+DigUp(t,n)は、集合Sを{(a,b)∈Pointer^2 | a<t.length ∧ b<t.length ∧ s[a..b]∈PT\\{$1} ∧ (∀i<n (b > DigUp(t,i).right))}としたとき、Sの中で第1要素が最大のものの中で第2要素が最小のものである。そのような要素が存在しなければ未定義とする。
+
+### RealDigUp(t, n): PT×N→PTの定義
+RealDigUp(t,n)=t[(DigUp(t,n).first)..(DigUp(t,n).second)]である。
+
+### Depth(t): T→Nの定義
+Depth(t)は、DigUp(t,n)が未定義でないような最大の自然数nである。
 
 ### IsCNF(t): T×Pointer^2→Booleanの定義
 1. t=0ならば、IsCNF(t)=trueとする。
@@ -173,18 +179,18 @@ s,t∈Tに対し、Cmp(s,t): T×T→{-1,0,+1}を以下で定義する。
       5. Cmp(a,p)=0かつCmp(b,q)=0ならば、Cmp(s,t)=Cmp(c,r)である。
 
 ## 基本列
-t∈Tに対し、t[n]: T×N→Tを以下で定義する。
+t∈Tに対し、FS(t,n): T×N→Tを以下で定義する。
 
-1. t=$0ならば、t[n]=tである。
+1. t=$0ならば、FS(t,n)=tである。
 2. t≠$0かつ￢(t∈PT)とする。このときtはa∈PTとb∈T\\{0}を用いてa+b∈Tと書ける。
-   1. b[n]≠$0ならば、b[n]=cとすると、t[n]=a+cである。
-   2. b[n]=$0ならば、t[n]=aである。
+   1. FS(b,n)≠$0ならば、FS(b,n)=cとすると、FS(t,n)=a+cである。
+   2. FS(b,n)=$0ならば、FS(t,n)=aである。
 3. t∈PTとする。
    1. tの正規化をt'とすると、t'はa∈Tとb∈{0,(0,0,0)}とc∈Tを用いて(a,b,c)と書ける。
-   2. t'=$1ならば、t[n]=$0である。
+   2. t'=$1ならば、FS(t,n)=$0である。
    3. t'≠$1ならば、
       1. (a\_0,b\_0)=DigUp(t',0)とする。
-      2. もしt'[a\_0..b\_0].sub=$0であれば、
+      2. もしt'[a\_0..b\_0].sub=0であれば、
          1. (a\_1,b\_1)=DigUp(t',1)とする。
          2. multPart=t'[a\_1,b\_1]とする。
          3. multArg=t'[a\_1,b\_1].arg[0]とする。
@@ -195,8 +201,16 @@ t∈Tに対し、t[n]: T×N→Tを以下で定義する。
          8. B'=(B\_1+B\_2+B\_3+"+")*nとする。
          9. B=B'[0..(B.length-2)]とする。 // 最後の'+'を削除する
          10. C=t'[(b\_1+1)...(t'.length)]とする。
-         11. t[n]=A+B+Cとする。
-      3. そうでなければ、わんだほい。
+         11. FS(t,n)=A+B+Cとする。
+      3. そうでなければ、
+         1. cutChild=t'[a\_0..b\_0]とする。
+         2. q=searchCount(t'[a\_0..b\_0])とする。
+         3. iを次の条件を満たす唯一の自然数とする。もし存在しなければ、i=Depth(t')とする。
+            1. 自然数0<=j<=iの範囲において、RealDigUp(t',j).sup=predIfPossible(cutChild.sup)かつRealDigUp(t',j).sub=0を満たすものがちょうどq個存在する。
+            2. 任意の自然数0<=j<=iに対し、Cmp(RealDigUp(t',j),cutChild)=+1であるか、(RealDigUp(t',j).sup=predIfPossible(cutChild.sup)かつRealDigUp(t',j).sub=0)である。
+         4. (a\_i,b\_i)=DigUp(t',a\_i)とする。
+         5. core=cutChild[0..(cutChild.supPtr.second)]+","+"0"+","+cutChild[(cutChild.argPtr.first)...(cutChild.length)]とする。
+         6. FS(t,n)=Van(t',a\_i,b\_1,a\_0,b\_0,core,n)とする。
 
 ## 巨大数
 WIP
