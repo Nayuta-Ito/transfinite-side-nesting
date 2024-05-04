@@ -138,11 +138,11 @@ s,t∈Tに対し、Cmp(s,t): T×T→{-1,0,+1}を以下で定義する。
 2. s=0かつt≠0ならば、Cmp(s,t)=-1である。
 3. s≠0かつt=0ならば、Cmp(s,t)=+1である。
 4. s≠0かつt≠0とする。
-  1. s∈PTかつ￢(t∈PT)ならば、tはa∈PTとb∈T\\{0}を用いてa+bと書ける。このとき、Cmp(s,t)=(　Cmp(s,a)≠0 ? Cmp(s,a) : -1　)である。
-  2. ￢(s∈PT)かつt∈PTならば、sはa∈PTとb∈T\\{0}を用いてa+bと書ける。このとき、Cmp(s,t)=(　Cmp(a,t)≠0 ? Cmp(a,t) : +1　)である。
-  3. ￢(s∈PT)かつ￢(t∈PT)ならば、sはa∈PTとb∈T\\{0}を用いてa+bと書け、tはc∈PTとd∈T\\{0}を用いてc+dと書ける。このときCmp(s,t)=(　Cmp(a,c)≠0 ? Cmp(a,c) : Cmp(b,d)　)である。
-  4. s∈PTかつt∈PTならば、sの正規化をs'、tの正規化をt'とする。
-    1. WIP
+   1. s∈PTかつ￢(t∈PT)ならば、tはa∈PTとb∈T\\{0}を用いてa+bと書ける。このとき、Cmp(s,t)=(　Cmp(s,a)≠0 ? Cmp(s,a) : -1　)である。
+   2. ￢(s∈PT)かつt∈PTならば、sはa∈PTとb∈T\\{0}を用いてa+bと書ける。このとき、Cmp(s,t)=(　Cmp(a,t)≠0 ? Cmp(a,t) : +1　)である。
+   3. ￢(s∈PT)かつ￢(t∈PT)ならば、sはa∈PTとb∈T\\{0}を用いてa+bと書け、tはc∈PTとd∈T\\{0}を用いてc+dと書ける。このときCmp(s,t)=(　Cmp(a,c)≠0 ? Cmp(a,c) : Cmp(b,d)　)である。
+   4. s∈PTかつt∈PTならば、sの正規化をs'、tの正規化をt'とする。
+      1. WIP
 
 ## 定義
 WIP
