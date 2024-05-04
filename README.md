@@ -108,16 +108,40 @@ Van("abcABCdeDEFdef", 6, 7, 3, 10, "fgh", 2) = "abcABCABCfghDEFDEFdef"
 Van("abcABCdeDEFdef", 6, 7, 3, 10, "fgh", 3) = "abcABCABCABCfghDEFDEFDEFdef"
 ```
 
-#### Nodes(t, n): PT×N→P(Pointer^2)の定義
-Nodes(t,n)は、集合{(a,b)∈Pointer^2 | a<t.length ∧ b<t.length ∧ s[a..b]∈T}である。
+## サブ関数
+### Nodes(t): PT→P(Pointer^2)の定義
+Nodes(t)は、集合{(a,b)∈Pointer^2 | a<t.length ∧ b<t.length ∧ s[a..b]∈T}である。
 
-#### DigUp(t, n): PT×N→Pointer^2の定義
+### DigUp(t, n): PT×N→Pointer^2の定義
 DigUp(t,n)は、集合Sを{(a,b)∈Pointer^2 | a<t.length ∧ b<t.length ∧ s[a..b]∈T ∧ (∀i<n (b > DigUp(t,i).right))}としたとき、Sの中で第1要素が最大のものの中で第2要素が最小のものである。
 
-#### IsCNF(t): T×Pointer^2→Booleanの定義
+### IsCNF(t): T×Pointer^2→Booleanの定義
 1. t=0ならば、IsCNF(t)=trueとする。
 2. もしt∈PTでなければ、tはt\_1∈PTとt\_2∈T\\{0}を用いてt=t\_1+t\_2と書ける。このとき、IsCNF(t)=IsCNF(t\_1)∧IsCNF(t\_2)である。
 3. もしt∈PTであれば、tはt\_1,t\_2,t\_3∈Tを用いてt=(t\_1,t\_2,t\_3)と書ける。このとき、IsCNF(t)=IsCNF(t\_1)∧t\_2=0∧IsCNF(t\_3)である。
+
+### t.supPtr, t.argPtr: それぞれT→Pointer^2の定義
+- t∈Tに対し、S=Nodes(t)とする。
+- S.leftが2番目に小さいものの中でS.rightが最も大きいものをt.supPtrとする。
+- S.rightが最も大きいもの中でS.rightが最も小さいものをt.argPtrとする。
+- subPtrはこれより定義が複雑なので今は未定義とする。
+
+### isSucc(t): T→Booleanの定義
+1. t=$0またはt∈PTならば、isSucc(t)はt=$1と同値である。
+2. そうでなければ、tはt\_1∈PTとt\_2∈T\\{0}を用いてt=t\_1+t\_2と書ける。このとき、isSucc(t)=isSucc(t\_2)である。
+
+### predIfPossible(t): T→Tの定義
+1. t=0またはt∈PTならば、
+   1. もしt=$1ならば、predIfPossible(t)=$0である。
+   2. そうでなければ、predIfPossible(t)=$1である。
+2. そうでなければ、tはt\_1∈PTとt\_2∈T\\{0}を用いてt=t\_1+t\_2と書ける。
+   1. もしt\_2=$1ならば、predIfPossible(t)=t\_1である。
+   2. そうでなければ、predIfPossible(t)=t\_2である。
+
+### searchCount(t): T→Nの定義
+1. Tの項の列{t\_n}\_{n∈N}をpredIfPossible^n(t.sup)で定める。添字が0から始まることに注意せよ。
+2. もし∃n∈N ∀m∈N a\_m=a\_nならば、そのようなnの中で最小のものをsearchCount(t)とする。
+3. そうでなければ、searchCount(t)は未定義とする。
 
 ## 正規化
 t∈Tの正規化は、tの一次正規化の二次正規化である。
@@ -148,8 +172,31 @@ s,t∈Tに対し、Cmp(s,t): T×T→{-1,0,+1}を以下で定義する。
       4. Cmp(a,p)=0かつCmp(b,q)≠0ならば、Cmp(s,t)=Cmp(b,q)である。
       5. Cmp(a,p)=0かつCmp(b,q)=0ならば、Cmp(s,t)=Cmp(c,r)である。
 
-## 定義
-WIP
+## 基本列
+t∈Tに対し、t[n]: T×N→Tを以下で定義する。
+
+1. t=$0ならば、t[n]=tである。
+2. t≠$0かつ￢(t∈PT)とする。このときtはa∈PTとb∈T\\{0}を用いてa+b∈Tと書ける。
+   1. b[n]≠$0ならば、b[n]=cとすると、t[n]=a+cである。
+   2. b[n]=$0ならば、t[n]=aである。
+3. t∈PTとする。
+   1. tの正規化をt'とすると、t'はa∈Tとb∈{0,(0,0,0)}とc∈Tを用いて(a,b,c)と書ける。
+   2. t'=$1ならば、t[n]=$0である。
+   3. t'≠$1ならば、
+      1. (a\_0,b\_0)=DigUp(t',0)とする。
+      2. もしt'[a\_0..b\_0].sub=$0であれば、
+         1. (a\_1,b\_1)=DigUp(t',1)とする。
+         2. multPart=t'[a\_1,b\_1]とする。
+         3. multArg=t'[a\_1,b\_1].arg[0]とする。
+         4. A=t'[0...a\_1]とする。
+         5. B\_1=t'[a\_1...(a\_1+multPart.argPtr)]とする。
+         6. B\_2=multArgとする。
+         7. B\_3=")"とする。
+         8. B'=(B\_1+B\_2+B\_3+"+")*nとする。
+         9. B=B'[0..(B.length-2)]とする。 // 最後の'+'を削除する
+         10. C=t'[(b\_1+1)...(t'.length)]とする。
+         11. t[n]=A+B+Cとする。
+      3. そうでなければ、わんだほい。
 
 ## 巨大数
 WIP
