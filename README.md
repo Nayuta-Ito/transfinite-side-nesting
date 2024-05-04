@@ -142,7 +142,11 @@ s,t∈Tに対し、Cmp(s,t): T×T→{-1,0,+1}を以下で定義する。
    2. ￢(s∈PT)かつt∈PTならば、sはa∈PTとb∈T\\{0}を用いてa+bと書ける。このとき、Cmp(s,t)=(　Cmp(a,t)≠0 ? Cmp(a,t) : +1　)である。
    3. ￢(s∈PT)かつ￢(t∈PT)ならば、sはa∈PTとb∈T\\{0}を用いてa+bと書け、tはc∈PTとd∈T\\{0}を用いてc+dと書ける。このときCmp(s,t)=(　Cmp(a,c)≠0 ? Cmp(a,c) : Cmp(b,d)　)である。
    4. s∈PTかつt∈PTならば、sの正規化をs'、tの正規化をt'とする。
-      1. WIP
+      1. s'=(a,b,c)とする。(a,b,c∈T)
+      2. t'=(p,q,r)とする。(a,b,c∈T)
+      3. Cmp(a,p)≠0ならば、Cmp(s,t)=Cmp(a,p)である。
+      4. Cmp(a,p)=0かつCmp(b,q)≠0ならば、Cmp(s,t)=Cmp(b,q)である。
+      5. Cmp(a,p)=0かつCmp(b,q)=0ならば、Cmp(s,t)=Cmp(c,r)である。
 
 ## 定義
 WIP
